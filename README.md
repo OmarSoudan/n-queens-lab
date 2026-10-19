@@ -1,116 +1,136 @@
-# ♛ N-Queens AI & Heuristics Laboratory
+# ♛ N‑Queens AI & Heuristics Laboratory
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![GitHub Profile](https://img.shields.io/badge/Author-Omar%20Soudan-181717?logo=github)](https://github.com/OmarSoudan)
+[![Author: Omar Soudan](https://img.shields.io/badge/Author-Omar%20Soudan-181717?logo=github)](https://github.com/OmarSoudan)
 
-A multi-paradigm benchmark laboratory and analysis framework exploring classical search, metaheuristics, evolutionary computation, and swarm intelligence to solve the famous **N-Queens Constraint Satisfaction Problem (CSP)**.
+A compact experimental framework for solving the N‑Queens constraint-satisfaction problem using a variety of search and optimization paradigms. This lab provides deterministic and stochastic solvers, benchmarking utilities, and a lightweight interactive visualizer to compare algorithmic behavior, performance, and convergence.
 
-The lab guarantees non-deterministic initializations on every run—producing distinct valid placements across invocations without caching history—and pairs each execution with high-resolution visual boards and engine telemetry.
-
----
-
-## ⚡ Core Features
-
-- **6 Distinct Paradigms**: Spanning deterministic tree search, repair heuristics, thermal annealing, bio-inspired genetics, and swarm velocity dynamics.
-- **Interactive Chess.com GUI**: Standalone Tkinter-powered visualizer featuring authentic board styling, vector-styled pieces, coordinate files/ranks, and side-by-side algorithmic telemetry cards.
-- **Dynamic Initial States**: Every solver begins from an independently randomized configuration or permutation, ensuring each run yields a distinct valid solution.
-- **Comparative Profiler**: Benchmarking pipeline tracking wall-clock latency, iteration counts, search state traversals, and automated comparative chart generation.
-- **Zero-Dependency Core GUI**: Clean, native GUI engine built entirely on Python's built-in `tkinter`—no fragile image assets or heavy desktop frameworks required.
+Key design goals:
+- Reproducible yet non-deterministic runs (every execution starts from a new randomized initial state).
+- Lightweight, dependency-minimal GUI (built with built-in `tkinter`).
+- A unified CLI for benchmarking and exporting publication-quality visualizations.
 
 ---
 
-## 🔬 Solvers & Algorithmic Matrix
+## Core Features
 
-| Algorithm | Paradigm | Time Complexity (Avg) | Space Complexity | Completeness | Non-Determinism Mechanism |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Randomized Backtracking** | Exact CSP / Depth-First Search | O(N!) worst; << O(N!) empirical | O(N) recursion depth | **Yes** (Exact) | Randomizes row search permutation per column at every recursive frame. |
-| **Min-Conflicts** | Heuristic Local Repair CSP | ~ O(N) for N <= 10^6 | O(N) vector | **No** (Local minima) | Seeds random permutations; resolves conflicting queen moves via randomized tie-breaking. |
-| **Hill Climbing** | Steepest-Ascent Local Search | O(R * S * N^2) | O(N) vector | **No** (Bounded restarts) | Pairwise swap neighbor evaluation combined with random restarts upon hitting plateaus. |
-| **Simulated Annealing** | Thermodynamic Metaheuristic | O(K * N) (K = steps) | O(N) vector | **Asymptotically** | Metropolis criterion P = exp(-delta_E / T) enables stochastic escapes from energy basins. |
-| **Genetic Algorithm (GA)** | Evolutionary AI | O(G * P * N^2) | O(P * N) (P = pop) | **No** (Stochastic) | Tournament selection, single-point crossover slicing, and random gene mutation. |
-| **Particle Swarm (PSO)** | Swarm Intelligence | O(I * S * N^2) | O(S * N) (S = swarm) | **No** (Stochastic) | Particles update coordinates driven by personal best (c1) and global swarm best (c2). |
+- Six algorithmic paradigms spanning exact search, local repair, metaheuristics, evolutionary computation, and swarm intelligence.
+- Interactive chess-style GUI (Tkinter) with board rendering, piece vectors, and telemetry panels.
+- Randomized initial states for each run to examine algorithm robustness.
+- Built-in benchmarking: wall-clock time, iteration counts, state traversals, and automated chart generation.
+- Minimal external dependencies: only numpy and matplotlib for plotting/exporting.
 
 ---
 
-## 📁 Repository Structure
+## Algorithms
+
+| Algorithm | Paradigm | Expected Time (typical) | Space | Notes |
+|---|---:|---:|---:|---|
+| Randomized Backtracking | Exact DFS / CSP | Exponential (worst-case) | O(N) recursion | Exact solver; randomizes column/row search order to diversify solutions. |
+| Min‑Conflicts | Local Repair CSP | ~O(N) (practical for many N) | O(N) | Fast and scalable; can get trapped in local minima without random tie-breaking. |
+| Hill Climbing | Steepest‑Ascent Local Search | O(R · S · N^2) | O(N) | Uses pairwise swaps + random restarts to escape plateaus. |
+| Simulated Annealing | Thermodynamic Metaheuristic | O(K · N) (K = steps) | O(N) | Metropolis acceptance (exp(-ΔE / T)) enables stochastic escapes from energy basins. |
+| Genetic Algorithm (GA) | Evolutionary | O(G · P · N^2) | O(P · N) | Population-based search with selection, crossover, and mutation; stochastic. |
+| Particle Swarm (PSO) | Swarm Intelligence | O(I · S · N^2) | O(S · N) | Particles update using personal & global bests; suited to continuous relaxations of discrete problems. |
+
+---
+
+## Repository Layout
 
 ```text
 n-queens-ai-lab/
 ├── README.md
+├── LICENSE
 ├── requirements.txt
-├── main.py                    # Unified entrypoint & CLI benchmark runner
+├── main.py                    # Unified CLI and benchmark runner
 └── solvers/
     ├── __init__.py
-    ├── base.py                # Abstract base solver, state representations, conflict metrics
-    ├── backtracking.py        # Stochastic DFS CSP solver
+    ├── base.py                # Base solver, state representation, conflict metrics
+    ├── backtracking.py        # Randomized DFS CSP solver
     ├── min_conflicts.py       # Heuristic local repair solver
-    ├── hill_climbing.py       # Steepest-ascent with random restarts
-    ├── simulated_annealing.py # Thermodynamic annealing solver
-    ├── genetic.py             # Evolutionary chromosome solver
-    ├── pso.py                 # Particle swarm optimization solver
-    ├── gui_visualizer.py      # Chess.com-style interactive GUI window
-    └── visualizer.py          # Terminal rendering & Matplotlib static exports
+    ├── hill_climbing.py       # Steepest-ascent with restarts
+    ├── simulated_annealing.py # Simulated annealing solver
+    ├── genetic.py             # Genetic Algorithm implementation
+    ├── pso.py                 # Particle Swarm Optimizer
+    ├── gui_visualizer.py      # Tkinter-based interactive visualizer
+    └── visualizer.py          # CLI plotting & Matplotlib exports
+```
 
+---
 
+## Getting Started
 
-    🚀 Getting Started
-Prerequisites
-Python 3.8 or higher
+Requirements
+- Python 3.8+
+- (Optional) numpy, matplotlib — only needed for plotting/export features
 
-matplotlib & numpy (for benchmark plotting exports)
+Clone and install:
 
-
-# Clone the repository
-git clone [https://github.com/OmarSoudan/n-queens-ai-lab.git](https://github.com/OmarSoudan/n-queens-lab.git)
+```bash
+git clone https://github.com/OmarSoudan/n-queens-lab.git
 cd n-queens-lab
-
-# Install dependencies
 pip install -r requirements.txt
+```
 
+---
 
-💻 Usage & CLI Reference
-1. Interactive Chess.com GUI Mode
-Launch dedicated visual windows displaying the solved board along with an analysis dossier:
+## Usage
 
-# Run Genetic Algorithm with interactive GUI (N=8)
-python main.py -a genetic --n 8 --gui
+Run solvers from the command line using `main.py`. The CLI supports individual algorithms, combined runs, GUI mode, and plot exports.
 
-# Run Min-Conflicts with interactive GUI on a larger board (N=16)
-python main.py -a min_conflicts --n 16 --gui
+Examples:
 
-# Run all 6 algorithms simultaneously and inspect their GUI windows side by side
-python main.py -a all --n 8 --gui
+- Run the Genetic Algorithm with the interactive GUI (N = 8):
+  ```bash
+  python main.py -a genetic --n 8 --gui
+  ```
 
-2. Terminal Benchmarking
-Run solvers directly in your console to compare execution speed and convergence iterations:
+- Run Min‑Conflicts with GUI (N = 16):
+  ```bash
+  python main.py -a min_conflicts --n 16 --gui
+  ```
 
-# Benchmark all solvers on standard 8-Queens
-python main.py --n 8
+- Benchmark all solvers in the terminal (N = 8):
+  ```bash
+  python main.py --n 8
+  ```
 
-# Benchmark Min-Conflicts on large-scale boards
-python main.py -a min_conflicts --n 64
+- Benchmark Min‑Conflicts on a larger board (N = 64):
+  ```bash
+  python main.py -a min_conflicts --n 64
+  ```
 
-3. Export High-Resolution Visual Plots
-Generate publication-ready static PNGs of the board and comparative bar charts:
+- Export a static board plot for Simulated Annealing:
+  ```bash
+  python main.py -a annealing --n 8 --plot
+  ```
 
-# Export static board plot for a specific algorithm
-python main.py -a annealing --n 8 --plot
+- Generate a comparative benchmark chart for all solvers:
+  ```bash
+  python main.py -a all --n 8 --plot
+  ```
 
-# Generate full benchmark comparison chart across all engines
-python main.py -a all --n 8 --plot
+See `python main.py --help` for full CLI options and configuration flags.
 
-📊 Analytical Insights
-CSP Phase Transitions & Solution Density: For the N-Queens problem, the density of valid solutions grows dramatically as N increases. As a consequence, Min-Conflicts solves configurations where N >= 1,000 in near-linear time (O(N)), while exhaustive backtracking suffers combinatorial state explosion.
+---
 
-Escaping Local Basins: Pure greedy hill climbers easily stall on diagonal conflict plateaus. By introducing thermal probability distribution (exp(-delta_E / T) in Annealing) or diverse candidate gene pools (Genetic Algorithm), metaheuristic strategies step backward through the fitness landscape to escape suboptimal traps.
+## Analytical Notes
 
-Completeness vs. Scalability: While Randomized Backtracking is the only method guaranteed to prove unsolvability (e.g., N=2, 3) or explore the full state space tree, stochastic heuristic methods scale significantly better for large practical board dimensions.
+- Phase transitions and solution density: The number of valid N‑Queens configurations grows rapidly; some heuristics (like Min‑Conflicts) exploit this density to scale well for large N.
+- Escaping local minima: Greedy hill climbers can stall on diagonal-constraint plateaus. Simulated annealing and stochastic genetic operators provide mechanisms for escape (temperature schedule, mutation/crossover diversity).
+- Completeness vs. scalability: Randomized backtracking is the only complete method here (able to prove unsatisfiable cases like N = 2, 3). Heuristic methods trade completeness for much better scalability on large boards.
 
-👨‍💻 Author
-Omar Soudan
+---
 
-GitHub: @OmarSoudan
+## Contributing
 
-📜 License
-Distributed under the MIT License. See LICENSE for more information.
+Contributions, suggestions, and bug reports are welcome. Create issues or PRs on the repository. If you add new solvers or visualizations, please include tests and a short benchmark comparison.
+
+---
+
+## Author & License
+
+Author: Omar Soudan — https://github.com/OmarSoudan
+
+License: MIT — see LICENSE for details
